@@ -4,6 +4,9 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import androidx.lifecycle.lifecycleScope
+import coil.ImageLoader
+import coil.decode.SvgDecoder
+import coil.load
 import com.example.weatherapp.databinding.ActivityMainBinding
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
@@ -26,17 +29,19 @@ class MainActivity : AppCompatActivity() {
 
         setUpWeatherApi()
 
+        setWeather("130010")
 
-
-        lifecycleScope.launch{
-            kotlin.runCatching {
-                weatherApi.getCityWeather("130010")
-            }.onSuccess{
-                binding.cityTextView.text = it.title
-            }.onFailure {
-                Log.d("error",it.message.toString())
-            }
+        binding.osakaButton.setOnClickListener {
+            setWeather("270000")
         }
+        binding.hokkaidoButton.setOnClickListener {
+            setWeather("016010")
+        }
+        binding.nagoyaButton.setOnClickListener {
+            setWeather("230010")
+        }
+
+
 
 
     }
@@ -56,5 +61,22 @@ class MainActivity : AppCompatActivity() {
             .build()
 
         weatherApi = retrofit.create(WeatherApiService::class.java)
+    }
+
+    fun setWeather(cityId: String){
+        val imageLoader = ImageLoader.Builder(this)
+            .components{add(SvgDecoder.Factory())}
+            .build()
+
+        lifecycleScope.launch{
+            kotlin.runCatching {
+                weatherApi.getCityWeather(cityId)
+            }.onSuccess{
+                binding.cityTextView.text = it.title
+                binding.weatherImageView.load(it.forecast[0].images.url, imageLoader)
+            }.onFailure {
+                Log.d("error",it.message.toString())
+            }
+        }
     }
 }
