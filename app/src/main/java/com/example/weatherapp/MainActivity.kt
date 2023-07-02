@@ -29,16 +29,16 @@ class MainActivity : AppCompatActivity() {
 
         setUpWeatherApi()
 
-        setWeather("130010")
+        setWeather(City.TOKYO.id)
 
         binding.osakaButton.setOnClickListener {
-            setWeather("270000")
+            setWeather(City.OSAKA.id)
         }
         binding.hokkaidoButton.setOnClickListener {
-            setWeather("016010")
+            setWeather(City.HOKKAIDO.id)
         }
         binding.nagoyaButton.setOnClickListener {
-            setWeather("230010")
+            setWeather(City.NAGOYA.id)
         }
 
 
